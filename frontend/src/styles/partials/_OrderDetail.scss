@@ -1,0 +1,45 @@
+.orders-detail {
+  .order-info {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    .self-info {
+      width: 40%;
+      background-color: $white;
+      padding: 20px 15px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .delivery-info,
+    .payment-info {
+      width: 30%;
+      background-color: $white;
+      padding: 20px 15px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+}
+
+.review-btn {
+  width: 120px;
+  height: 30px;
+  border-radius: 5px;
+  background: $white;
+  font-size: 16px;
+  font-weight: 500;
+  color: #4e6975;
+  border: none;
+  cursor: pointer;
+  border: 2px solid #4e6975;
+}
+
+.order-review {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

@@ -1,0 +1,107 @@
+.seller-add {
+  .general-info-card {
+    background-color: $white;
+    padding: 20px 60px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    label {
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      padding: 10px;
+      font-family: inherit;
+    }
+  }
+  .detail-card {
+    background-color: $white;
+    padding: 20px 60px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    .form-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      .text-field {
+        label {
+          display: block;
+          font-weight: 600;
+        }
+        input {
+          width: 80%;
+          margin-bottom: 20px;
+          border-radius: 5px;
+          padding: 10px;
+          font-family: inherit;
+        }
+      }
+    }
+  }
+  .pricing-image-card {
+    background-color: $white;
+    padding: 20px 60px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    .form-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      .text-field {
+        label {
+          display: block;
+          font-weight: 600;
+        }
+        input {
+          width: 80%;
+          margin-bottom: 20px;
+          border-radius: 5px;
+          padding: 10px;
+          font-family: inherit;
+        }
+      }
+      .file {
+        width: 100%;
+      }
+    }
+  }
+  .description-card {
+    background-color: $white;
+    padding: 20px 60px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    label {
+      display: block;
+      font-weight: 600;
+    }
+    textarea {
+      width: 100%;
+    }
+  }
+  .nav-btn {
+    display: flex;
+    gap: 12px;
+    .btn-cancel {
+      background-color: $white;
+      width: 50%;
+      padding: 20px;
+      font-size: 32px;
+      font-weight: 700;
+      border-radius: 2px;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-submit {
+      background-color: #4e6975;
+      color: #fff;
+      width: 50%;
+      padding: 20px;
+      font-size: 32px;
+      font-weight: 700;
+      border-radius: 2px;
+      border: none;
+      cursor: pointer;
+    }
+  }
+}

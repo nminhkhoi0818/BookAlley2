@@ -1,0 +1,32 @@
+.seller-products-detail {
+  background-color: $white;
+  padding: 20px 40px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  .utils-seller {
+    display: flex;
+    justify-content: center;
+    button {
+      padding: 8px;
+      background-color: #a0c3d2;
+      font-size: inherit;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
+  table {
+    border-collapse: collapse;
+    border-radius: 10px;
+  }
+  th {
+    border: 2px solid black;
+    padding: 10px;
+    text-align: left;
+  }
+  td {
+    border: 2px solid black;
+    padding: 10px;
+  }
+}

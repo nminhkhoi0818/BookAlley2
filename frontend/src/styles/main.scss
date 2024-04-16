@@ -1,0 +1,48 @@
+@import "./variables/colors.scss";
+@import "./fonts/fonts.scss";
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+}
+
+p {
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Montserrat", sans-serif;
+}
+
+textarea {
+  resize: none;
+}
+
+@import "./partials/Layout.scss";
+@import "./partials/SignInUp.scss";
+@import "./partials/Header.scss";
+@import "./partials/Footer.scss";
+@import "./partials/ProductCard.scss";
+@import "./partials/HomePage.scss";
+@import "./partials/ProductDetail.scss";
+@import "./partials/Reviews.scss";
+@import "./partials/Seller.scss";
+@import "./partials/AddProduct.scss";
+@import "./partials/Cart.scss";
+@import "./partials/Checkout.scss";
+@import "./partials/Order.scss";
+@import "./partials/OrderDetail.scss";
+@import "./partials/Address.scss";
+@import "./partials/Shop.scss";
+@import "./partials/ProductSeller.scss";
+@import "./partials/OrderSeller.scss";

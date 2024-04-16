@@ -1,0 +1,43 @@
+.checkout {
+  display: flex;
+  gap: 12px;
+  .left {
+    width: 70%;
+    .payment-part {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      .delivery,
+      .payment {
+        width: 50%;
+        background-color: $white;
+        padding: 20px 15px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+    .products-list {
+      background-color: $white;
+      padding: 20px 15px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      .products-header {
+        display: flex;
+        justify-content: space-between;
+      }
+      .product-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        img {
+          width: 110px;
+          height: 110px;
+        }
+      }
+    }
+  }
+}

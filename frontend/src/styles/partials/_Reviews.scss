@@ -1,0 +1,84 @@
+.customer-reviews {
+  border-radius: 15px;
+  padding: 30px;
+  background-color: $white;
+  h2 {
+    margin-bottom: 20px;
+  }
+  .add-review-btn {
+    width: 200px;
+    height: 50px;
+    border-radius: 15px;
+    background: $white;
+    font-size: 24px;
+    font-weight: 600;
+    color: #4e6975;
+    border: none;
+    cursor: pointer;
+    border: 2px solid #4e6975;
+  }
+}
+
+.star-rating {
+  button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  .star {
+    font-size: 24px;
+  }
+  .on {
+    color: #ffd700;
+  }
+  .off {
+    color: #ccc;
+  }
+}
+
+.form-review {
+  display: flex;
+  flex-direction: column;
+  gap: 10px 0;
+  .send-btn {
+    width: 150px;
+    height: 40px;
+    border-radius: 15px;
+    background: #4e6975;
+    font-size: 16px;
+    font-weight: 600;
+    color: $white;
+    border: none;
+    cursor: pointer;
+    margin-right: 20px;
+  }
+}
+
+.review-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  .user-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+    }
+    .info-right {
+      h4 {
+        margin-left: 8px;
+      }
+    }
+  }
+  .date {
+    font-size: 16px;
+    font-weight: 400;
+  }
+  .content {
+    font-weight: 600;
+  }
+}
