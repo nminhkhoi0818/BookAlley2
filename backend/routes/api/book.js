@@ -106,6 +106,19 @@ router.patch("/:id", isVerified, hasRoles("seller"), async (req, res) => {
   }
 });
 
+router.delete('/:id', isVerified, hasRoles('seller'), async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = req.user;
+    const shop = await Shop.exists({ owner: user.id }).exec();
+    if (!shop) throw new Error('No shop associated with seller!');
+    await Book.findOneAndDelete({ _id: id, seller: shop._id });
+    return res.sendStatus(204);
+  } catch (err) {
+    return res.status(400).send(err.message);
+  }
+});
+
 router.get("/tags", async (req, res) => {
   try {
     const availableTags = {

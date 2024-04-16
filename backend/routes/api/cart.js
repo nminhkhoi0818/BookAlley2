@@ -15,7 +15,6 @@ router.post("/", isVerified, async (req, res) => {
     return res.status(400).send("Invalid quantity!");
   try {
     const quantityInt = parseInt(quantity);
-    if (quantityInt < 1) throw new Error('Invalid quantity!');
     const existed = await Book.exists({ _id: product_id }).exec();
     if (!existed) throw new Error('Product does not exist!');
     let cart = await Cart.findOne({ owner: user.id }).exec();
@@ -25,7 +24,10 @@ router.post("/", isVerified, async (req, res) => {
     const productIndex = cart.items.findIndex((p) => p.product == product_id);
     if (productIndex > -1) {
       cart.items[productIndex].quantity += quantityInt;
+      if (cart.items[productIndex].quantity < 0)
+        throw new Error('Invalid quantity!');
     } else {
+      if (quantityInt < 1) throw new Error('Invalid quantity!');
       cart.items.push({
         product: product_id,
         quantity: quantityInt
