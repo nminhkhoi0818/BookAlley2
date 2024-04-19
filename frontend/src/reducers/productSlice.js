@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getCategories, getProducts } from "../actions/productsAction";
+import {
+  deleteProduct,
+  getCategories,
+  getProducts,
+} from "../actions/productsAction";
 
 const initialState = {
   loading: false,

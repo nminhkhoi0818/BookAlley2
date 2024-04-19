@@ -3,6 +3,7 @@ import {
   getOrdersForSeller,
   getProductsForSeller,
 } from "../actions/sellerAction";
+import { deleteProduct } from "../actions/productsAction";
 
 const initialState = {
   loading: false,
@@ -39,6 +40,9 @@ const sellerSlice = createSlice({
     builder.addCase(getOrdersForSeller.rejected, (state) => {
       state.loading = false;
       state.orders = {};
+    });
+    builder.addCase(deleteProduct.fulfilled, (state, { payload }) => {
+      state.infos.listings.map((product) => product._id !== payload.product_id);
     });
   },
 });
