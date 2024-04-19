@@ -48,12 +48,8 @@ export const modifyItems = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
-      let { data } = await axiosInstance.post(
-        `/api/cart`,
-        { product_id, quantity },
-        config
-      );
-      return data;
+      await axiosInstance.post(`/api/cart`, { product_id, quantity }, config);
+      return { product_id, quantity };
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -69,12 +65,12 @@ export const removeItems = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
-      let { data } = await axiosInstance.delete(
+      await axiosInstance.delete(
         `/api/cart`,
         { data: { product_id, quantity } },
         config
       );
-      return data;
+      return { product_id };
     } catch (error) {
       return rejectWithValue(error.response.data);
     }

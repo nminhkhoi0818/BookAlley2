@@ -1,5 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addCart, getCart, removeItems } from "../../actions/cartAction";
+import {
+  addCart,
+  getCart,
+  modifyItems,
+  removeItems,
+} from "../../actions/cartAction";
 
 const initialState = {
   loading: false,
@@ -38,11 +43,28 @@ const cartSlice = createSlice({
       .addCase(getCart.rejected, (state, { payload }) => {
         (state.loading = false), (state.error = payload);
       })
+      .addCase(modifyItems.pending, (state) => {
+        (state.loading = true), (state.error = null);
+      })
+      .addCase(modifyItems.fulfilled, (state, { payload }) => {
+        (state.loading = false), (state.success = true);
+        state.cart.items.forEach((item) => {
+          if (item.product._id == payload.product_id) {
+            item.quantity += parseInt(payload.quantity);
+          }
+        });
+      })
+      .addCase(modifyItems.rejected, (state, { payload }) => {
+        (state.loading = false), (state.error = payload);
+      })
       .addCase(removeItems.pending, (state) => {
         (state.loading = true), (state.error = null);
       })
-      .addCase(removeItems.fulfilled, (state) => {
+      .addCase(removeItems.fulfilled, (state, { payload }) => {
         (state.loading = false), (state.success = true);
+        state.cart.items = state.cart.items.filter((item) => {
+          return item.product._id !== payload.product_id;
+        });
       })
       .addCase(removeItems.rejected, (state, { payload }) => {
         (state.loading = false), (state.error = payload);

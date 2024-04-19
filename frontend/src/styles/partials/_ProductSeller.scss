@@ -2,17 +2,17 @@
   background-color: $white;
   padding: 20px 40px;
   border-radius: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  .utils-seller {
+  .group-header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
     button {
-      padding: 8px;
-      background-color: #a0c3d2;
-      font-size: inherit;
-      border-radius: 5px;
+      padding: 10px;
+      background-color: $paynes-gray;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-family: inherit;
       cursor: pointer;
     }
   }
@@ -21,12 +21,17 @@
     border-radius: 10px;
   }
   th {
-    border: 2px solid black;
     padding: 10px;
     text-align: left;
+    border-bottom: 1px solid black;
+    text-align: center;
   }
   td {
-    border: 2px solid black;
     padding: 10px;
+    border-bottom: 1px solid black;
+    text-align: center;
+  }
+  td:nth-child(2) {
+    text-align: left;
   }
 }

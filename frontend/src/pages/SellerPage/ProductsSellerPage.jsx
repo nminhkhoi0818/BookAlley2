@@ -10,6 +10,10 @@ import HeaderComponent from "../../components/HeaderComponent";
 import FooterComponent from "../../components/FooterComponent";
 import { getProductsForSeller } from "../../actions/sellerAction";
 import { useDispatch, useSelector } from "react-redux";
+import { CiSquareRemove } from "react-icons/ci";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
+import { deleteProduct } from "../../actions/productsAction";
 
 const ProductsSellerPage = () => {
   const dispatch = useDispatch();
@@ -17,6 +21,24 @@ const ProductsSellerPage = () => {
   useEffect(() => {
     dispatch(getProductsForSeller());
   }, []);
+
+  const acceptFunc = (product_id) => {
+    dispatch(deleteProduct({ product_id }));
+  };
+
+  const reject = () => {};
+
+  const showConfirmDialog = (product_id) => {
+    confirmDialog({
+      message: "Are you sure you want to delete this book?",
+      header: "Confirmation",
+      icon: "pi pi-exclamation-triangle",
+      defaultFocus: "accept",
+      accept: () => acceptFunc(product_id),
+      reject,
+    });
+  };
+
   return (
     <>
       <HeaderComponent />
@@ -59,20 +81,21 @@ const ProductsSellerPage = () => {
             </div>
           </div>
           <div className="seller-products-detail">
-            <h2>Products</h2>
-            <div className="utils-seller">
+            <div className="group-header">
+              <h2>Products</h2>
               <Link to={"/seller/products/add"}>
-                <button type="submit">Create New Book</button>
+                <button type="submit">+ Create New Book</button>
               </Link>
             </div>
             <table>
               <thead>
                 <tr>
-                  <th></th>
+                  <th>STT</th>
                   <th>Name</th>
                   <th>Price</th>
                   <th>In Stock</th>
                   <th>Sold</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -85,12 +108,23 @@ const ProductsSellerPage = () => {
                         <td>
                           {book.price && book.price.toLocaleString("en-US")}đ
                         </td>
-                        <td>0</td>
-                        <td>0</td>
+                        <td>{book.instock}</td>
+                        <td>{book.sold}</td>
+                        <td>
+                          <CiSquareRemove
+                            style={{
+                              fontSize: "32px",
+                              cursor: "pointer",
+                              color: "red",
+                            }}
+                            onClick={() => showConfirmDialog(book._id)}
+                          />
+                        </td>
                       </tr>
                     );
                   })}
               </tbody>
+              <ConfirmDialog />
             </table>
           </div>
         </div>

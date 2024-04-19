@@ -38,7 +38,6 @@ export const getOrdersForSeller = createAsyncThunk(
 export const processOrderSeller = createAsyncThunk(
   "seller/order/process",
   async ({ order_id, status }, { rejectWithValue }) => {
-    console.log(order_id);
     try {
       const config = {
         headers: {

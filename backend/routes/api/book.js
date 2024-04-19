@@ -106,12 +106,12 @@ router.patch("/:id", isVerified, hasRoles("seller"), async (req, res) => {
   }
 });
 
-router.delete('/:id', isVerified, hasRoles('seller'), async (req, res) => {
+router.delete("/:id", isVerified, hasRoles("seller"), async (req, res) => {
   try {
     const id = req.params.id;
     const user = req.user;
     const shop = await Shop.exists({ owner: user.id }).exec();
-    if (!shop) throw new Error('No shop associated with seller!');
+    if (!shop) throw new Error("No shop associated with seller!");
     await Book.findOneAndDelete({ _id: id, seller: shop._id });
     return res.sendStatus(204);
   } catch (err) {
@@ -191,7 +191,7 @@ router.get("/search", async (req, res) => {
   }
 });
 
-router.get('/list', isVerified, hasRoles('admin'), async (req, res) => {
+router.get("/list", isVerified, hasRoles("admin"), async (req, res) => {
   const page = req.query.page || 1;
   const limit = parseInt(req.query.items) || 10;
   const skip = page * limit - limit;
@@ -200,7 +200,7 @@ router.get('/list', isVerified, hasRoles('admin'), async (req, res) => {
     const resultsPromise = Book.find()
       .skip(skip)
       .limit(limit)
-      .sort({ created: 'desc' })
+      .sort({ created: "desc" })
       .populate();
     // Counting the total documents
     const countPromise = Book.count();
@@ -216,21 +216,21 @@ router.get('/list', isVerified, hasRoles('admin'), async (req, res) => {
         success: true,
         result,
         pagination,
-        message: 'Successfully found all documents'
+        message: "Successfully found all documents",
       });
     } else {
       return res.status(203).json({
         success: false,
         result: [],
         pagination,
-        message: 'Collection is Empty'
+        message: "Collection is Empty",
       });
     }
   } catch (err) {
     console.log(err);
     return res
       .status(500)
-      .json({ success: false, result: [], message: 'Oops there is an Error' });
+      .json({ success: false, result: [], message: "Oops there is an Error" });
   }
 });
 module.exports = router;

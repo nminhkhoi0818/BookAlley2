@@ -23,7 +23,7 @@ export const getProducts = createAsyncThunk("products", async () => {
       },
     };
     let { data } = await axiosPublicInstance.get(
-      `api/book/list?limit=30`,
+      `api/book/list-books?limit=30`,
       config
     );
     return data;
@@ -50,6 +50,7 @@ export const addProduct = createAsyncThunk(
       instock,
       language,
       tags,
+      image,
     },
     { rejectWithValue }
   ) => {
@@ -76,6 +77,7 @@ export const addProduct = createAsyncThunk(
           instock,
           language,
           tags,
+          image,
         },
         config
       );
@@ -83,6 +85,27 @@ export const addProduct = createAsyncThunk(
     } catch (error) {
       console.log(error);
       rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const deleteProduct = createAsyncThunk(
+  "seller/order/process",
+  async ({ product_id }, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      let { data } = await axiosInstance.delete(
+        `/api/book/${product_id}`,
+        config
+      );
+      console.log(data);
+      return { product_id };
+    } catch (error) {
+      return rejectWithValue(error.response.data);
     }
   }
 );

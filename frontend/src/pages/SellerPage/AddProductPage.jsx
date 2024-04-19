@@ -3,7 +3,7 @@ import HeaderComponent from "../../components/HeaderComponent";
 import FooterComponent from "../../components/FooterComponent";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../../actions/productsAction";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AddProductPage = () => {
   const [formData, setFormData] = useState({
@@ -21,8 +21,10 @@ const AddProductPage = () => {
     instock: undefined,
     language: "",
     tags: [],
+    image: null,
   });
   const dispatch = useDispatch();
+  const nagvigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -34,13 +36,22 @@ const AddProductPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(formData);
     dispatch(addProduct(formData));
+    nagvigate("/seller");
   };
 
   const handleTagsChange = (event) => {
     const tagArray = [event.target.value];
     setFormData({ ...formData, tags: tagArray });
+  };
+
+  const onImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData({
+        ...formData,
+        image: e.target.files[0],
+      });
+    }
   };
 
   return (
@@ -177,7 +188,7 @@ const AddProductPage = () => {
               </div>
               <div className="text-field">
                 <label htmlFor="">Product picture</label>
-                <input type="file" />
+                <input type="file" onChange={onImageChange} />
               </div>
             </div>
           </div>
