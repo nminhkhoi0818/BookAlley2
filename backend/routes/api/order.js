@@ -377,4 +377,38 @@ router.get('/search', isVerified, hasRoles('admin'), async (req, res) => {
     });
   }
 });
+router.delete(
+  '/delete/:id',
+  isVerified,
+  hasRoles('admin'),
+  async (req, res) => {
+    try {
+      // Find the document by id and delete it
+
+      // Find the document by id and delete it
+      const result = await Order.findOneAndDelete({ _id: req.params.id }).exec();
+      // If no results found, return document not found
+      if (!result) {
+        return res.status(404).json({
+          success: false,
+          result: null,
+          message: 'No document found by this id: ' + req.params.id
+        });
+      } else {
+        return res.status(200).json({
+          success: true,
+          result,
+          message: 'Successfully Deleted the document by id: ' + req.params.id
+        });
+      }
+    } catch {
+      return res.status(500).json({
+        success: false,
+        result: null,
+        message: 'Oops there is an Error'
+      });
+    }
+  }
+);
+
 module.exports = router;
