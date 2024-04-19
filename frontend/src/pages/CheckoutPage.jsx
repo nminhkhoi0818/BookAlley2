@@ -1,10 +1,11 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import HeaderComponent from "../components/HeaderComponent";
 import FooterComponent from "../components/FooterComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { addOrder } from "../actions/orderAction";
 import { useEffect, useState } from "react";
 import { getAddress } from "../actions/userActions";
+import { ToastContainer, toast } from "react-toastify";
 
 const CheckoutPage = () => {
   const location = useLocation();
@@ -33,7 +34,16 @@ const CheckoutPage = () => {
       })
     ).then((result) => {
       if (addOrder.fulfilled.match(result)) {
-        navigate("/");
+        toast.success("Checkout successfully", {
+          position: "bottom-right",
+        });
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      } else {
+        // toast.error(error, {
+        //   position: "bottom-right",
+        // });
       }
     });
   };
@@ -137,7 +147,8 @@ const CheckoutPage = () => {
                 selectedItems.map((item, index) => {
                   return (
                     <div className="product-item" key={index}>
-                      <div
+                      <Link
+                        to={`/products/${item.product._id}`}
                         style={{
                           width: "390px",
                           display: "flex",
@@ -146,7 +157,8 @@ const CheckoutPage = () => {
                       >
                         <img src={item.product.image} alt="" />
                         <p>{item.product.name}</p>
-                      </div>
+                      </Link>
+
                       <span>
                         {item.product.price &&
                           item.product.price.toLocaleString("en-US")}
@@ -198,6 +210,7 @@ const CheckoutPage = () => {
       </div>
 
       <FooterComponent />
+      <ToastContainer />
     </>
   );
 };

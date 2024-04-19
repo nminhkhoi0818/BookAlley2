@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import HeaderComponent from "../components/HeaderComponent";
 import FooterComponent from "../components/FooterComponent";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { axiosInstance } from "../utils/axios";
 import { useDispatch, useSelector } from "react-redux";
 import AddReviewComponent from "../components/AddReviewComponent";
@@ -77,7 +77,11 @@ const OrderDetailPage = () => {
             {order.items &&
               order.items.map((item) => {
                 return (
-                  <div className="order-card" key={item._id}>
+                  <Link
+                    to={`/products/${item.product._id}`}
+                    className="order-card"
+                    key={item._id}
+                  >
                     <div className="order-info">
                       <img src={item.product.image}></img>
                       <div className="order-review">
@@ -98,7 +102,7 @@ const OrderDetailPage = () => {
                         đ
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             <AddReviewComponent

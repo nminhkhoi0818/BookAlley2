@@ -28,6 +28,10 @@ textarea {
   resize: none;
 }
 
+* {
+  box-sizing: content-box !important;
+}
+
 @import "./partials/Layout.scss";
 @import "./partials/SignInUp.scss";
 @import "./partials/Header.scss";

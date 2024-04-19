@@ -38,8 +38,9 @@ router.post("/register", async (req, res) => {
         expiresIn: "1d",
       }
     );
-    console.log(verifyToken);
+    // console.log(verifyToken);
     const verifyLink = `${process.env.FE_HOST}/verify?token=${verifyToken}`;
+    // console.log(verifyLink);
     await sendEmail(
       email,
       "Please verify your email address",
@@ -205,21 +206,21 @@ router.post("/reset-password", async (req, res) => {
   }
 });
 
-router.post("/cms/login",  async (req, res) => {
+router.post("/cms/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     // validate
     if (!email || !password)
-      return res.status(400).json({ msg: 'Not all fields have been entered.' });
+      return res.status(400).json({ msg: "Not all fields have been entered." });
 
-    const admin = await User.findOne({ email: email, role: 'admin' });
+    const admin = await User.findOne({ email: email, role: "admin" });
     // console.log(admin);
     if (!admin)
       return res.status(400).json({
         success: false,
         result: null,
-        message: 'No account with this email has been registered.'
+        message: "No account with this email has been registered.",
       });
 
     const isMatch = await bcrypt.compare(password, admin.password);
@@ -227,13 +228,13 @@ router.post("/cms/login",  async (req, res) => {
       return res.status(400).json({
         success: false,
         result: null,
-        message: 'Invalid credentials.'
+        message: "Invalid credentials.",
       });
 
     const token = jwt.sign(
       {
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
-        id: admin._id
+        id: admin._id,
       },
       process.env.ACCESS_TOKEN_SECRET
     );
@@ -245,10 +246,10 @@ router.post("/cms/login",  async (req, res) => {
         admin: {
           id: admin._id,
           name: admin.name,
-          isLoggedIn: true
-        }
+          isLoggedIn: true,
+        },
       },
-      message: 'Successfully login admin'
+      message: "Successfully login admin",
     });
   } catch (err) {
     // res.status(500).json({ success: false, result:null, message: err.message });

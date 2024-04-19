@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import HeaderComponent from "../components/HeaderComponent";
 import FooterComponent from "../components/FooterComponent";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateAddress } from "../actions/userActions";
+import { ToastContainer, toast } from "react-toastify";
 
 const AddressPage = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ const AddressPage = () => {
     type: "Home/Apartment",
   });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -28,7 +30,16 @@ const AddressPage = () => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    dispatch(updateAddress(formData));
+    dispatch(updateAddress(formData)).then((result) => {
+      if (updateAddress.fulfilled.match(result)) {
+        toast.success("Update address successfully", {
+          position: "bottom-right",
+        });
+        setTimeout(() => {
+          navigate("/checkout/cart");
+        }, 1000);
+      }
+    });
   };
 
   return (
@@ -149,6 +160,7 @@ const AddressPage = () => {
         </div>
       </div>
       <FooterComponent />
+      <ToastContainer />
     </>
   );
 };

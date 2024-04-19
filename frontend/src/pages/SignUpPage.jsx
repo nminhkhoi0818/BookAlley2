@@ -37,7 +37,7 @@ const SignUpPage = () => {
         position: "bottom-right",
       });
       setTimeout(() => {
-        navigate("/");
+        navigate("/signin");
       }, 1000);
     }
     if (error !== null && error !== "Forbidden") {

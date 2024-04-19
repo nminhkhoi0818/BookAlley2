@@ -106,7 +106,7 @@ router.post("/address", isVerified, async (req, res) => {
   if (!type || typeof type !== "string")
     return res.status(400).send("Invalid type!");
   try {
-    const existed = await Address.exists({ ownder: user.id, alias }).exec();
+    const existed = await Address.exists({ owner: user.id, alias }).exec();
     if (existed) {
       await Address.findByIdAndUpdate(existed._id, {
         fullname,
@@ -117,7 +117,7 @@ router.post("/address", isVerified, async (req, res) => {
         address,
         alias,
         type,
-        is_default: is_default ? true : false
+        is_default: is_default ? true : false,
       });
     } else {
       const adr = new Address({
@@ -130,7 +130,7 @@ router.post("/address", isVerified, async (req, res) => {
         address,
         alias,
         type,
-        is_default: is_default ? true : false
+        is_default: is_default ? true : false,
       });
       await adr.save();
     }
