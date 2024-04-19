@@ -106,6 +106,42 @@ router.patch("/:id", isVerified, hasRoles("seller"), async (req, res) => {
   }
 });
 
+router.patch('/update/:id', isVerified, hasRoles('admin'), async (req, res) => {
+  try {
+    // Find document by id and updates with the required fields
+    const result = await Book.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body,
+      {
+        new: true, // return the new result instead of the old one
+        runValidators: true
+      }
+    ).exec();
+
+    return res.status(200).json({
+      success: true,
+      result,
+      message: 'we update this document by this id: ' + req.params.id
+    });
+  } catch (err) {
+    // If err is thrown by Mongoose due to required validations
+    if (err.name == 'ValidationError') {
+      return res.status(400).json({
+        success: false,
+        result: null,
+        message: 'Required fields are not supplied'
+      });
+    } else {
+      // Server Error
+      return res.status(500).json({
+        success: false,
+        result: null,
+        message: 'Oops there is an Error'
+      });
+    }
+  }
+});
+
 router.delete('/:id', isVerified, hasRoles('seller'), async (req, res) => {
   try {
     const id = req.params.id;
@@ -119,6 +155,34 @@ router.delete('/:id', isVerified, hasRoles('seller'), async (req, res) => {
   }
 });
 
+router.delete('/delete/:id', isVerified, hasRoles('admin'), async (req, res) => {
+  try {
+    // Find the document by id and delete it
+
+    // Find the document by id and delete it
+    const result = await Book.findOneAndDelete({ _id: req.params.id }).exec();
+    // If no results found, return document not found
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        result: null,
+        message: 'No document found by this id: ' + req.params.id
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        result,
+        message: 'Successfully Deleted the document by id: ' + req.params.id
+      });
+    }
+  } catch {
+    return res.status(500).json({
+      success: false,
+      result: null,
+      message: 'Oops there is an Error'
+    });
+  }
+});
 router.get("/tags", async (req, res) => {
   try {
     const availableTags = {
@@ -172,7 +236,7 @@ router.get("/get-detail/:id", async (req, res) => {
   }
 });
 
-router.get("/search", async (req, res) => {
+router.get("/search-book", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -191,6 +255,53 @@ router.get("/search", async (req, res) => {
   }
 });
 
+router.get('/search', async (req, res) => {
+  if (req.query.q === undefined || req.query.q === '' || req.query.q === ' ') {
+    return res
+      .status(202)
+      .json({
+        success: true,
+        result: [],
+        message: 'No document found by this request'
+      })
+      .end();
+  }
+  const fieldsArray = req.query.fields.split(',');
+
+  const fields = { $or: [] };
+
+  for (const field of fieldsArray) {
+    fields.$or.push({ [field]: { $regex: new RegExp(req.query.q, 'i') } });
+  }
+
+  try {
+    let results = await Book.find(fields).sort({ name: 'asc' }).limit(10);
+
+    if (results.length >= 1) {
+      return res.status(200).json({
+        success: true,
+        result: results,
+        message: 'Successfully found all documents'
+      });
+    } else {
+      return res
+        .status(202)
+        .json({
+          success: true,
+          result: [],
+          message: 'No document found by this request'
+        })
+        .end();
+    }
+  } catch {
+    return res.status(500).json({
+      success: false,
+      result: null,
+      message: 'Oops there is an Error'
+    });
+  }
+});
+
 router.get('/list', isVerified, hasRoles('admin'), async (req, res) => {
   const page = req.query.page || 1;
   const limit = parseInt(req.query.items) || 10;
@@ -200,8 +311,8 @@ router.get('/list', isVerified, hasRoles('admin'), async (req, res) => {
     const resultsPromise = Book.find()
       .skip(skip)
       .limit(limit)
-      .sort({ created: 'desc' })
-      .populate();
+      .sort({ created_at: 'desc', _id: 1 });
+      // .populate();
     // Counting the total documents
     const countPromise = Book.count();
     // Resolving both promises
