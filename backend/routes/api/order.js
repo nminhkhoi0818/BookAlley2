@@ -7,6 +7,7 @@ const Cart = require("../../models/Cart");
 const isVerified = require("../../middleware/isVerified");
 const hasRoles = require("../../middleware/hasRoles");
 const Shop = require("../../models/Shop");
+const User = require("../../models/User");
 const router = express.Router();
 
 router.post("/", isVerified, async (req, res) => {
@@ -284,7 +285,7 @@ router.get(
       const resultsPromise = Order.find()
         .skip(skip)
         .limit(limit)
-        .sort({ created: 'desc' })
+        .sort({ created_at: 'desc', _id: 1 })
         .populate('owner', '-password -refresh_token');
       // Counting the total documents
       const countPromise = Order.count();
@@ -322,5 +323,58 @@ router.get(
   }
 );
 
+router.get('/search', isVerified, hasRoles('admin'), async (req, res) => {
+  if (req.query.q === undefined || req.query.q === '' || req.query.q === ' ') {
+    return res
+      .status(202)
+      .json({
+        success: false,
+        result: [],
+        message: 'No document found by this request'
+      })
+      .end();
+  }
+  const fieldsArray = req.query.fields.split(',');
 
+  const fields = { $or: [] };
+
+  for (const field of fieldsArray) {
+    fields.$or.push({ [field]: { $regex: new RegExp(req.query.q, 'i') } });
+  }
+
+  try {
+    let users = await User.find(fields).sort({ name: 'asc' }).limit(10);
+    const order_fields = { $or: [] };
+    for (const user of users) {
+      order_fields.$or.push({["owner"]: user._id});
+    }
+    let results = await Order.find(order_fields)
+      .sort({ created_at: 'desc' })
+      .populate('owner', '-password -refresh_token')
+      .limit(10);
+
+    if (results.length >= 1) {
+      return res.status(200).json({
+        success: true,
+        result: results,
+        message: 'Successfully found all documents'
+      });
+    } else {
+      return res
+        .status(202)
+        .json({
+          success: true,
+          result: [],
+          message: 'No document found by this request'
+        })
+        .end();
+    }
+  } catch {
+    return res.status(500).json({
+      success: true,
+      result: null,
+      message: 'Oops there is an Error'
+    });
+  }
+});
 module.exports = router;

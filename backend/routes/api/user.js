@@ -107,20 +107,33 @@ router.post("/address", isVerified, async (req, res) => {
     return res.status(400).send("Invalid type!");
   try {
     const existed = await Address.exists({ ownder: user.id, alias }).exec();
-    if (existed) throw new Error("Address already existed!");
-    const adr = new Address({
-      owner: user.id,
-      fullname,
-      phone,
-      city,
-      district,
-      ward,
-      address,
-      alias,
-      type,
-      is_default: is_default ? true : false,
-    });
-    await adr.save();
+    if (existed) {
+      await Address.findByIdAndUpdate(existed._id, {
+        fullname,
+        phone,
+        city,
+        district,
+        ward,
+        address,
+        alias,
+        type,
+        is_default: is_default ? true : false
+      });
+    } else {
+      const adr = new Address({
+        owner: user.id,
+        fullname,
+        phone,
+        city,
+        district,
+        ward,
+        address,
+        alias,
+        type,
+        is_default: is_default ? true : false
+      });
+      await adr.save();
+    }
     return res.sendStatus(204);
   } catch (err) {
     return res.status(400).send(err.message);
