@@ -17,8 +17,8 @@ const CompletedTabComponent = () => {
           </tr>
         </thead>
         <tbody>
-          {orders.docs &&
-            orders.docs.map((order) => {
+          {orders &&
+            orders.map((order) => {
               if (order.status == "completed") {
                 return (
                   <tr key={order._id}>

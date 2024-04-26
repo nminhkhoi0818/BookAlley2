@@ -9,7 +9,7 @@ import { deleteProduct } from "../actions/productsAction";
 const initialState = {
   loading: false,
   infos: {},
-  orders: {},
+  orders: [],
   error: null,
 };
 
@@ -46,7 +46,7 @@ const sellerSlice = createSlice({
       state.infos.listings.map((product) => product._id !== payload.product_id);
     });
     builder.addCase(processOrderSeller.fulfilled, (state, { payload }) => {
-      state.orders.docs = state.orders.docs.map((doc) => {
+      state.orders = state.orders.map((doc) => {
         if (doc._id === payload.order_id) {
           doc.status = payload.status;
         }

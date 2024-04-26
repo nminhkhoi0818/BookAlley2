@@ -38,8 +38,8 @@ const PendingTabComponent = () => {
           </tr>
         </thead>
         <tbody>
-          {orders.docs &&
-            orders.docs.map((order) => {
+          {orders &&
+            orders.map((order) => {
               if (order.status == "pending") {
                 return (
                   <tr key={order._id}>
