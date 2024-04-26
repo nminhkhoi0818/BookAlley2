@@ -7,6 +7,7 @@ const upload = require("../../middleware/multer");
 const uploadFile = require("../../utils/fileUpload");
 const { sendEmail, genEmailConfirmTemplate } = require("../../utils/sendEmail");
 const isVerified = require("../../middleware/isVerified");
+const hasRoles = require('../../middleware/hasRoles');
 const router = express.Router();
 
 router.get("/", isAuth, async (req, res) => {
@@ -156,4 +157,181 @@ router.get("/address", isVerified, async (req, res) => {
     return res.status(500).send(err.message);
   }
 });
+
+router.get('/list', isVerified, hasRoles('admin'), async (req, res) => {
+  const user = req.user;
+  try {
+    const page = req.query.page || 1;
+    const limit = parseInt(req.query.items) || 10;
+    const skip = page * limit - limit;
+
+    const resultsPromise = User.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ created_at: 'desc', _id: 1 })
+      .select('-password -refresh_token');
+    // Counting the total documents
+    const countPromise = User.count();
+    // Resolving both promises
+    const [result, count] = await Promise.all([resultsPromise, countPromise]);
+    // Calculating total pages
+    const pages = Math.ceil(count / limit);
+
+    // Getting Pagination Object
+    const pagination = { page, pages, count };
+    if (count > 0) {
+      return res.status(200).json({
+        success: true,
+        result,
+        pagination,
+        message: 'Successfully found all documents'
+      });
+    } else {
+      return res.status(203).json({
+        success: false,
+        result: [],
+        pagination,
+        message: 'Collection is Empty'
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      result: [],
+      message: 'Oops there is an Error'
+    });
+  }
+});
+
+router.get('/search', async (req, res) => {
+  if (req.query.q === undefined || req.query.q === '' || req.query.q === ' ') {
+    return res
+      .status(202)
+      .json({
+        success: true,
+        result: [],
+        message: 'No document found by this request'
+      })
+      .end();
+  }
+  const fieldsArray = req.query.fields.split(',');
+
+  const fields = { $or: [] };
+
+  for (const field of fieldsArray) {
+    fields.$or.push({ [field]: { $regex: new RegExp(req.query.q, 'i') } });
+  }
+
+  try {
+    let results = await User.find(fields).sort({ name: 'asc' }).limit(10);
+
+    if (results.length >= 1) {
+      return res.status(200).json({
+        success: true,
+        result: results,
+        message: 'Successfully found all documents'
+      });
+    } else {
+      return res
+        .status(202)
+        .json({
+          success: true,
+          result: [],
+          message: 'No document found by this request'
+        })
+        .end();
+    }
+  } catch {
+    return res.status(500).json({
+      success: false,
+      result: null,
+      message: 'Oops there is an Error'
+    });
+  }
+});
+
+router.patch(
+  '/update/:id',
+  isVerified,
+  hasRoles('admin'),
+  async (req, res) => {
+    try {
+      const dbuser = await User.findById(req.params.id).exec();
+      if (dbuser.role === 'admin') {
+        return res.status(400).json({
+          success: false,
+          result: null,
+          message: "Can't change role of admin"
+        });
+        
+      } 
+      const result = await User.findOneAndUpdate(
+        { _id: req.params.id },
+        req.body,
+        {
+          new: true, // return the new result instead of the old one
+          runValidators: true
+        }
+      )
+        .select('-password -refresh_token')
+        .exec();
+      // Find document by id and updates with the required fields
+    
+      return res.status(200).json({
+        success: true,
+        result,
+        message: 'we update this document by this id: ' + req.params.id
+      });
+    } catch (err) {
+      // If err is thrown by Mongoose due to required validations
+      if (err.name == 'ValidationError') {
+        return res.status(400).json({
+          success: false,
+          result: null,
+          message: 'Required fields are not supplied'
+        });
+      } else {
+        // Server Error
+        return res.status(500).json({
+          success: false,
+          result: null,
+          message: 'Oops there is an Error'
+        });
+      }
+    }
+  }
+);
+router.delete(
+  '/delete/:id',
+  isVerified,
+  hasRoles('admin'),
+  async (req, res) => {
+    try {
+      // Find the document by id and delete it
+
+      // Find the document by id and delete it
+      const result = await User.findOneAndDelete({ _id: req.params.id }).exec();
+      // If no results found, return document not found
+      if (!result) {
+        return res.status(404).json({
+          success: false,
+          result: null,
+          message: 'No document found by this id: ' + req.params.id
+        });
+      } else {
+        return res.status(200).json({
+          success: true,
+          result,
+          message: 'Successfully Deleted the document by id: ' + req.params.id
+        });
+      }
+    } catch {
+      return res.status(500).json({
+        success: false,
+        result: null,
+        message: 'Oops there is an Error'
+      });
+    }
+  }
+);
 module.exports = router;

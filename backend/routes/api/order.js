@@ -270,6 +270,48 @@ router.patch(
   }
 );
 
+router.patch(
+  '/update/:order_id',
+  isVerified,
+  hasRoles('admin'),
+  async (req, res) => {
+    try {
+      // Find document by id and updates with the required fields
+      const result = await Order.findOneAndUpdate(
+        { _id: req.params.order_id },
+        req.body,
+        {
+          new: true, // return the new result instead of the old one
+          runValidators: true
+        }
+      )
+        .populate('owner', '-password -refresh_token')
+        .exec();
+
+      return res.status(200).json({
+        success: true,
+        result,
+        message: 'we update this document by this id: ' + req.params.order_id
+      });
+    } catch (err) {
+      // If err is thrown by Mongoose due to required validations
+      if (err.name == 'ValidationError') {
+        return res.status(400).json({
+          success: false,
+          result: null,
+          message: 'Required fields are not supplied'
+        });
+      } else {
+        // Server Error
+        return res.status(500).json({
+          success: false,
+          result: null,
+          message: 'Oops there is an Error'
+        });
+      }
+    }
+  }
+);
 
 router.get(
   '/list',
@@ -387,6 +429,12 @@ router.delete(
 
       // Find the document by id and delete it
       const result = await Order.findOneAndDelete({ _id: req.params.id }).exec();
+      // const result = await Order.findById(req.params.id).exec();
+      for (const item of result.items) {
+        await Book.findByIdAndUpdate(item.product, {
+          $inc: { instock: item.quantity }
+        });
+      }
       // If no results found, return document not found
       if (!result) {
         return res.status(404).json({
@@ -411,4 +459,45 @@ router.delete(
   }
 );
 
+router.get('/statistic', isVerified, hasRoles('admin'), async (req, res) => {
+  try {
+    const data = await Order.aggregate().sortByCount("status");
+    const count = await Order.count();
+    const obj = {}
+    obj['orderCount'] = count;
+    obj['groupByStatus'] = {};
+    obj['groupByPaymentMethod'] = {};
+    obj['groupByShippingMethod'] = {};
+    for (const i of data) {
+      obj['groupByStatus'][i["_id"]] = parseFloat(((i["count"] / count) * 100).toFixed(2));
+    }
+    const data1 = await Order.aggregate().sortByCount('payment_method');
+    for (const i of data1) {
+      obj['groupByPaymentMethod'][i['_id']] = parseFloat(((i["count"] / count) * 100).toFixed(2));
+    }
+    const data2 = await Order.aggregate().sortByCount('shipping_method');
+    for (const i of data2) {
+      obj['groupByShippingMethod'][i['_id']] = parseFloat(((i["count"] / count) * 100).toFixed(2));
+    }
+    const payments = await Order.find({ status: 'completed' })
+      .select('total')
+      .exec();
+    let sum = 0;
+    for (const payment of payments) {
+      sum += payment.total;
+    }
+    obj["totalPayment"] = sum;
+    const lastMonth = new Date();
+    lastMonth.setDate(1);
+    lastMonth.setMonth(lastMonth.getMonth() - 1);
+    const countUser = await User.count();
+    const countUserLastMonth = await User.count({
+      created_at: { $gte: lastMonth }
+    });
+    obj["userLastMonth"] = parseFloat(((countUserLastMonth / countUser) * 100).toFixed(2));
+    return res.json(obj);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
 module.exports = router;
