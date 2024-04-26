@@ -162,17 +162,23 @@ router.get(
       if (!shop) throw new Error("No shop associated with seller!");
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
-      const orders = await Order.paginate(
-        { seller: shop.id },
-        {
-          page,
-          limit,
-          populate: [
-            { path: "items.product", select: "name price image seller rating" },
-            "shipping_info",
-          ],
-        }
-      );
+      // const orders = await Order.paginate(
+      //   { seller: shop.id },
+      //   {
+      //     page,
+      //     limit,
+      //     populate: [
+      //       { path: "items.product", select: "name price image seller rating" },
+      //       "shipping_info",
+      //     ],
+      //   }
+      // );
+      const orders = await Order.find({
+        seller: shop.id
+      }).populate([
+        { path: 'items.product', select: 'name price image seller rating' },
+        'shipping_info'
+      ]);
       // const orders = await Order.find({})
       //   .populate([
       //     {
