@@ -44,12 +44,8 @@ export const processOrderSeller = createAsyncThunk(
           "Content-Type": "application/json",
         },
       };
-      let { data } = await axiosInstance.patch(
-        `/api/order/${order_id}`,
-        { status },
-        config
-      );
-      return data;
+      await axiosInstance.patch(`/api/order/${order_id}`, { status }, config);
+      return { order_id, status };
     } catch (error) {
       return rejectWithValue(error.response.data);
     }

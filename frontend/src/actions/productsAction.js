@@ -90,7 +90,7 @@ export const addProduct = createAsyncThunk(
 );
 
 export const deleteProduct = createAsyncThunk(
-  "seller/order/process",
+  "seller/order/delete",
   async ({ product_id }, { rejectWithValue }) => {
     try {
       const config = {

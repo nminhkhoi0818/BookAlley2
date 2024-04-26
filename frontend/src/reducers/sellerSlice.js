@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   getOrdersForSeller,
   getProductsForSeller,
+  processOrderSeller,
 } from "../actions/sellerAction";
 import { deleteProduct } from "../actions/productsAction";
 
@@ -43,6 +44,14 @@ const sellerSlice = createSlice({
     });
     builder.addCase(deleteProduct.fulfilled, (state, { payload }) => {
       state.infos.listings.map((product) => product._id !== payload.product_id);
+    });
+    builder.addCase(processOrderSeller.fulfilled, (state, { payload }) => {
+      state.orders.docs = state.orders.docs.map((doc) => {
+        if (doc._id === payload.order_id) {
+          doc.status = payload.status;
+        }
+        return doc;
+      });
     });
   },
 });

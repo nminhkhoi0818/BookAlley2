@@ -1,16 +1,28 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { processOrderSeller } from "../../actions/sellerAction";
+import { ToastContainer, toast } from "react-toastify";
 
 const PendingTabComponent = () => {
   const { orders } = useSelector((state) => state.seller);
   const dispatch = useDispatch();
 
   const handleProcess = (order_id, status) => {
-    dispatch(processOrderSeller({ order_id: order_id, status }));
+    dispatch(processOrderSeller({ order_id: order_id, status })).then(
+      (result) => {
+        if (processOrderSeller.fulfilled.match(result)) {
+          toast.success("Process successfully", {
+            position: "bottom-right",
+          });
+        } else {
+          toast.error(error, {
+            position: "bottom-right",
+          });
+        }
+      }
+    );
   };
 
-  useEffect(() => {}, [orders]);
   return (
     <>
       <table className="data-tab">
@@ -60,6 +72,7 @@ const PendingTabComponent = () => {
             })}
         </tbody>
       </table>
+      <ToastContainer />
     </>
   );
 };

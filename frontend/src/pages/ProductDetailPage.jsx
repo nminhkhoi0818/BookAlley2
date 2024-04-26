@@ -56,11 +56,12 @@ const ProductDetailPage = () => {
     <>
       <HeaderComponent />
       <div
-        className="container-fluid"
         style={{
           backgroundColor: "#F0F0F0",
           paddingTop: "0.5rem",
           paddingBottom: "0.5rem",
+          display: "flex",
+          flexGrow: 1,
         }}
       >
         <div className="container product-detail">
