@@ -18,7 +18,7 @@ const SearchPage = () => {
       const searchTerm = searchParams.get("q");
       if (searchTerm) {
         const { data } = await axiosPublicInstance.get(
-          `api/book/search?searchTerm=${searchTerm}`,
+          `api/book/search-book?searchTerm=${searchTerm}`,
           config
         );
         setProducts(data.docs);
