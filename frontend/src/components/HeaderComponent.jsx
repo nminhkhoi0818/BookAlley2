@@ -55,7 +55,7 @@ const HeaderComponent = () => {
             </div>
           </Link>
           {access_token ? (
-            infos.role == "seller" ? (
+            infos.role == "seller" || "admin" ? (
               <div
                 className="account"
                 onMouseEnter={() => setOpenAccount(true)}
