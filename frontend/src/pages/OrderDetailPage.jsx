@@ -5,11 +5,13 @@ import { Link, useParams } from "react-router-dom";
 import { axiosInstance } from "../utils/axios";
 import { useDispatch, useSelector } from "react-redux";
 import AddReviewComponent from "../components/AddReviewComponent";
+import { ToastContainer, toast } from "react-toastify";
 
 const OrderDetailPage = () => {
   const { order_id } = useParams();
   const [order, setOrder] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { loading, success } = useSelector((state) => state.reviews);
   const [productId, setProductId] = useState("");
 
   useEffect(() => {
@@ -24,6 +26,15 @@ const OrderDetailPage = () => {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (success && !loading) {
+      toast.success("Add comment successfully", {
+        position: "bottom-right",
+      });
+      setIsModalOpen(false);
+    }
+  }, [loading, success]);
 
   const handleOpenModal = (product_id) => {
     setIsModalOpen(true);
@@ -89,7 +100,11 @@ const OrderDetailPage = () => {
                         <button
                           type="button"
                           className="review-btn"
-                          onClick={() => handleOpenModal(item.product._id)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleOpenModal(item.product._id);
+                          }}
                         >
                           Write review
                         </button>
@@ -114,6 +129,7 @@ const OrderDetailPage = () => {
         </div>
       </div>
       <FooterComponent />
+      <ToastContainer />
     </>
   );
 };
