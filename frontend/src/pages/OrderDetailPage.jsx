@@ -97,17 +97,19 @@ const OrderDetailPage = () => {
                       <img src={item.product.image}></img>
                       <div className="order-review">
                         <h3>{item.product.name}</h3>
-                        <button
-                          type="button"
-                          className="review-btn"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleOpenModal(item.product._id);
-                          }}
-                        >
-                          Write review
-                        </button>
+                        {order.status === "completed" && (
+                          <button
+                            type="button"
+                            className="review-btn"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleOpenModal(item.product._id);
+                            }}
+                          >
+                            Write review
+                          </button>
+                        )}
                       </div>
                     </div>
                     <div className="order-total">

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { userResetPassword } from "../actions/authAction";
 
 const ResetPasswordPage = () => {
@@ -56,7 +56,10 @@ const ResetPasswordPage = () => {
           </button>
         </form>
         <p>
-          Just remember your password? <a href="">Sign in</a>
+          Just remember your password?{" "}
+          <Link to="/signin" style={{ textDecoration: "underline" }}>
+            Sign in
+          </Link>
         </p>
       </div>
     </div>
