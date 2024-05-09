@@ -6,6 +6,7 @@ import { addOrder } from "../actions/orderAction";
 import { useEffect, useState } from "react";
 import { getAddress } from "../actions/userActions";
 import { ToastContainer, toast } from "react-toastify";
+import { removeItems } from "../actions/cartAction";
 
 const CheckoutPage = () => {
   const location = useLocation();
@@ -18,6 +19,12 @@ const CheckoutPage = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleRemoveToCart = async (product_id, quantity) => {
+    const result = dispatch(
+      removeItems({ product_id, quantity: quantity.toString() })
+    );
+  };
 
   const handleCheckout = () => {
     dispatch(
@@ -34,6 +41,12 @@ const CheckoutPage = () => {
       })
     ).then((result) => {
       if (addOrder.fulfilled.match(result)) {
+        for (let i = 0; i < selectedItems.length; i++) {
+          handleRemoveToCart(
+            selectedItems[i].product._id,
+            selectedItems[i].quantity
+          );
+        }
         toast.success("Checkout successfully", {
           position: "bottom-right",
         });
